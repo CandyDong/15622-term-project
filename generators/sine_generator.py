@@ -23,7 +23,14 @@ def generate_sine(sample_rate, length, params):
 	for i in range(num_samples):
 		t = float(i) / sample_rate
 		v = ((params["a1"] * math.sin(t * params["f1"] * math.pi)) + (params["a2"] * math.sin(t * params["f2"] * math.pi))) * 0.5
+
+		# normalization
+		peak = np.max(np.absolute(v))
+		if peak > 0:
+		   v = v / peak
+
 		data[i] = v
+
 	return data 
 
 def sample_param(param):
