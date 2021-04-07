@@ -1,0 +1,2 @@
+-i https://pypi.org/simple/
+synthplayer==2.4

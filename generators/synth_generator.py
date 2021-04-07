@@ -41,27 +41,41 @@ def generate_freq(num):
 
 def sample(param):
 	index = random.choice(range(len(param)))
-	return param[index]
+	return param[index], index
+
+def generate_one_hot_encoding(index, num_levels):
+	encoding = np.zeros(num_levels).astype(float)
+	encoding[index] = 1.0
+	return encoding
 
 def sample_param(parameters, size):
 	# sample parameters
 	param_set = []
+	labels = []
 	for i in range(size):
-		new_set = {k: sample(v) for k, v in parameters.items()}
-		# print(new_set)
-		param_set.append(new_set)
-	return param_set
+		encoding = []
+		new_set = {}
+		for k, param in sorted(parameters.items()):
+			value, index = sample(param)
+			# print("param: {}, index: {}, value: {}, encoding: {}".format(str(k), index, value, generate_one_hot_encoding(index, len(param))))
+			new_set.update({k: value})
+			encoding.append(generate_one_hot_encoding(index, len(param)))
 
-def generate_dataset(args, param_set):
+		labels.append(np.hstack(encoding))
+		param_set.append(new_set)
+	return param_set, labels
+
+def generate_dataset(args, param_set, labels):
 	dataset = []
 
 	for i, param in enumerate(param_set):
 		d = {"filename": os.path.join(args.wav_dir, "{:05d}.wav".format(i))}
 		d.update(param)
+		d.update({"label": labels[i]})
 		dataset.append(d)
 		if i%10 == 0: 
 			print("generating example {} ".format(i) + "."*30)
-			# pp.pprint(d)
+			pp.pprint(d)
 
 		synth_gen = generate_synth(param, args.sample_rate)
 		audio = generate_sound(synth_gen, param, args.length, args.sample_rate)
@@ -98,7 +112,7 @@ def generate_sound(gen, p, length, sample_rate):
 def write_meta(meta_file, parameters, dataset):
 	#write the meta file
 	with open(meta_file, 'w') as f:
-		writer = csv.DictWriter(f, fieldnames=["id", "filename"]+list(parameters.keys()))
+		writer = csv.DictWriter(f, fieldnames=["id", "filename", "label"]+list(sorted(parameters.keys())))
 		writer.writeheader()
 		for i, d in enumerate(dataset):
 			d["id"] = i
@@ -128,9 +142,11 @@ def main():
 				  # "f_cut": ,
 				  # "q": # resonance
 				  }
+	# print(parameters)
+	# print(sorted(parameters.keys()))
 	
-	param_set = sample_param(parameters, args.size)
-	dataset = generate_dataset(args, param_set)
+	param_set, labels = sample_param(parameters, args.size)
+	dataset = generate_dataset(args, param_set, labels)
 
 	# stores parameters <-> filename mapping
 	meta_file = os.path.join(args.out_dir, "meta.csv")
