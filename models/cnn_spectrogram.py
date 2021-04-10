@@ -5,6 +5,9 @@ import csv
 import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
+from tensorflow.keras import backend as K
+import ast
+import numpy as np
 
 pp = pprint.PrettyPrinter(indent=4, width=1)
 
@@ -29,7 +32,26 @@ if not os.path.exists(MODEL_DIR):
 
 PARAMETERS = sorted(["C", "M", "A", "D", "attack", "decay", "sustain", "sustain_level", "release"])
 
-def get_e2e_model():
+
+def top_k_mean_accuracy(y_true, y_pred, k=5):
+    """
+    @ paper
+    The top-k mean accuracy is obtained by computing the top-k
+    accuracy for each test example and then taking the mean across
+    all examples. In the same manner as done in the MPR analysis,
+    we compute the top-k mean accuracy per synthesizer
+    parameter for 𝑘 = 1, ... ,5.
+    """
+    # TODO: per parameter?
+    original_shape = tf.shape(y_true)
+    y_true = tf.reshape(y_true, (-1, tf.shape(y_true)[-1]))
+    y_pred = tf.reshape(y_pred, (-1, tf.shape(y_pred)[-1]))
+    top_k = K.in_top_k(y_pred, tf.cast(tf.argmax(y_true, axis=-1), "int32"), k)
+    correct_pred = tf.reshape(top_k, original_shape[:-1])
+    return tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+
+
+def get_e2e_model(label_size):
 	model = keras.Sequential()
 	model.add(keras.Input(shape=(1,16384)))
 	model.add(keras.layers.Conv1D(filters=96,  kernel_size=64, strides=4, activation='relu', padding="same", data_format='channels_first'))
@@ -49,8 +71,18 @@ def get_e2e_model():
 	model.add(keras.layers.Flatten())
 	model.add(keras.layers.Dense(512))
 
-	model.add(keras.layers.Dense(9, activation="softmax", name="predictions"))
-	model.compile(optimizer='adam', loss=keras.losses.CategoricalCrossentropy())
+	model.add(keras.layers.Dense(label_size, activation="sigmoid"))
+	model.compile(
+		optimizer='adam', 
+		loss=keras.losses.BinaryCrossentropy(), 
+		metrics=[
+            # @paper: 1) Mean Percentile Rank?
+            # mean_percentile_rank,
+            # @paper: 2) Top-k mean accuracy based evaluation
+            top_k_mean_accuracy,
+            # @paper: 3) Mean Absolute Error based evaluation
+            keras.metrics.MeanAbsoluteError(),
+        ],)
 
 	print(model.summary())
 	return model
@@ -75,7 +107,6 @@ def get_c4_model():
 	return model
 
 def read_meta():
-	print("read_meta")
 	dataset = []
 	with open(META_FILE_PATH, 'r') as f:
 		reader = csv.DictReader(f)
@@ -98,10 +129,14 @@ def main():
 
 
 	dataset = read_meta()
-	print("dataset loaded......")
+	label_size = len(np.fromstring(dataset[0]['label'][1:-1], dtype=float, sep=' '))
+	print("+" * 30)
+	print("dataset loaded.")
+	print("label size = {}".format(label_size))
+	print("+" * 30)
 
 	if MODEL_NAME is "E2E":
-		model = get_e2e_model()
+		model = get_e2e_model(label_size)
 	elif MODEL_NAME is "C4":
 		# not yet implemented
 		model = get_c4_model()
