@@ -73,7 +73,7 @@ def generate_dataset(args, param_set, labels):
 		d.update(param)
 		d.update({"label": labels[i]})
 		dataset.append(d)
-		if i%10 == 0: 
+		if i%100 == 0: 
 			print("generating example {} ".format(i) + "."*30)
 			pp.pprint(d)
 

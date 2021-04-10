@@ -18,7 +18,6 @@ class DataGenerator(keras.utils.Sequence):
         self.batch_size = batch_size
         self.shuffle = shuffle
         self.dataset = dataset
-        self.dataset_size = len(dataset)
         self.label_size = len(np.fromstring(dataset[0]['label'][1:-1], dtype=float, sep=' '))
         self.n_channels = 1
         self.n_samps = n_samps
@@ -29,29 +28,35 @@ class DataGenerator(keras.utils.Sequence):
             self.expand_axis = 1
 
         # set up list of IDs from data files
-        self.list_IDs = range(self.dataset_size)
+        self.list_IDs = range(len(self.dataset))
 
-        print(f"Number of examples in dataset: {len(self.list_IDs)}")
         slice: int = 0
         if last > 0.0:
-            slice = int(self.dataset_size * (1 - last))
+            slice = int(len(self.dataset) * (1 - last))
             self.list_IDs = self.list_IDs[slice:]
-            print(f"Taking Last {len(self.list_IDs)} points")
+            # print(f"Taking Last {len(self.list_IDs)} points")
         elif first > 0.0:
-            slice = int(self.dataset_size * first)
+            slice = int(len(self.dataset) * first)
             self.list_IDs = self.list_IDs[:slice]
-            print(f"Taking First {len(self.list_IDs)} points")
+            # print(f"Taking First {len(self.list_IDs)} points")
 
+        self.dataset_size = len(self.list_IDs)
+        print(f"Number of examples in dataset: {self.dataset_size}")
         self.on_epoch_end()
 
     def __len__(self):
         "Denotes the number of batches per epoch"
-        return int(np.floor(len(self.list_IDs) / self.batch_size))
+        # print("dataset size: {}, batchs size: {}, number of batches: {}".format(
+        #         self.dataset_size, 
+        #         self.batch_size, 
+        #         int(np.floor(self.dataset_size / self.batch_size))))
+        return int(np.floor(self.dataset_size / self.batch_size))
 
     def __getitem__(self, index):
         "Generate one batch of data"
         # Generate indexes of the batch
         indexes = self.indexes[index * self.batch_size : (index + 1) * self.batch_size]
+        # print("index: {}, num_batch: {}".format(index, int(np.floor(self.dataset_size / self.batch_size))))
 
         # Find list of IDs
         # list_IDs_temp = [self.list_IDs[k] for k in indexes]
@@ -59,7 +64,7 @@ class DataGenerator(keras.utils.Sequence):
         # Generate data
         X, y = self.__data_generation(indexes)
 
-        # print("Returning data! Got X: {}, y: {}".format(X.shape,y.shape))
+        # print("Returning batch! Got X: {}, y: {}".format(X.shape,y.shape))
         return X, y
 
     def get_meta(self, index):
@@ -71,6 +76,7 @@ class DataGenerator(keras.utils.Sequence):
 
     def on_epoch_end(self):
         "Updates indexes after each epoch"
+        print("dataset shuffled.")
         self.indexes = np.arange(len(self.list_IDs))
         if self.shuffle is True:
             np.random.shuffle(self.indexes)
@@ -102,8 +108,9 @@ class DataGenerator(keras.utils.Sequence):
                     )
                 )
             X.append(data[: self.n_samps])
+        # print("X shape: {}, Y shape: {}".format(len(X), len(y)))
         Xd = np.expand_dims(np.vstack(X), axis=2)
         yd = np.vstack(y)
 
-        # print("X: {}, y: {} \n X shape: {}, Y shape: {}".format(Xd, yd, Xd.shape, yd.shape))
+        
         return Xd, yd

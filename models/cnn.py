@@ -10,11 +10,14 @@ import ast
 import numpy as np
 from data_generator import DataGenerator
 import math
+from synthplayer.oscillators import *
+from scipy.io.wavfile import write
 
 SAMPLE_RATE = 16384
 OUT_DIR = "../data"
 MODEL_DIR = "../saved_models/"
 WAV_DIR = "../data/wav_files"
+RECONSTRUCT_WAV_DIR = "../data/reconstructed_wav_files"
 MODEL_NAME = "E2E" 
 
 NUM_EPOCH = 100
@@ -30,6 +33,8 @@ if not os.path.exists(OUT_DIR):
 	os.makedirs(OUT_DIR)
 if not os.path.exists(MODEL_DIR):
 	os.makedirs(MODEL_DIR)
+if not os.path.exists(RECONSTRUCT_WAV_DIR):
+	os.makedirs(RECONSTRUCT_WAV_DIR)
 
 ''' 
 	generate `num` values in [min, max] 
@@ -176,17 +181,46 @@ def decode(key, x):
 def reconstruct(prediction, meta):
 	print("prediction: {}".format(prediction))
 	with open(PREDICTION_FILE_PATH, 'w') as f:
-		writer = csv.DictWriter(f, fieldnames=["id", "original_filename"]+PARAMETERS)
+		writer = csv.DictWriter(f, fieldnames=["id", "original_filename", "reconstruct_filename"]+PARAMETERS)
 		writer.writeheader()
 		for i in range(prediction.shape[0]):
 			pred = {}
 			pred["id"] = meta[i]["id"]
 			pred["original_filename"] = meta[i]["filename"]
+			pred["reconstruct_filename"] = os.path.join(RECONSTRUCT_WAV_DIR, "{:05d}.wav".format(int(pred["id"])))
 			for j, param in enumerate(PARAMETERS):
 				vector = prediction[i][j:j+NUM_CLASSES]
 				value = decode(param, vector)
 				pred[param] = value
+			reconstruct_sound(pred)
 			writer.writerow(pred)
+
+def generate_synth(p, sample_rate):
+	# currently the oscillator only consists of a frequency modulated sine wave
+	m = Sine(frequency=p["M"], amplitude=p["D"], samplerate=sample_rate)
+	y_osc = Sine(frequency=p["C"], amplitude=p["A"], fm_lfo=m, samplerate=sample_rate)
+
+	y_env = EnvelopeFilter(y_osc, attack=p["attack"], 
+								  decay=p["decay"], 
+								  sustain=p["sustain"], 
+								  sustain_level=p["sustain_level"],
+								  release=p["release"])
+
+	# TODO: low pass filter + resonance + gate
+	synth = y_env
+	return synth.blocks()
+
+def generate_sound(gen, p, length, sample_rate):
+	num_samples = int(sample_rate*length)
+	data = []
+	while len(data) < num_samples:
+		data.extend(next(gen))
+	return np.array(data)
+
+def reconstruct_sound(param):
+	synth_gen = generate_synth(param, SAMPLE_RATE)
+	audio = generate_sound(synth_gen, param, 1.0, SAMPLE_RATE)
+	write(param["reconstruct_filename"], SAMPLE_RATE, audio)
 
 
 def main():
@@ -215,6 +249,12 @@ def main():
 		# not yet implemented
 		model = get_c4_model()
 
+	params = {"dataset": dataset, 
+				"batch_size": BATCH_SIZE, 
+				"shuffle": True,
+				"n_samps": SAMPLE_RATE}
+	training_generator = DataGenerator(first=0.8, **params)
+	validation_generator = DataGenerator(last=0.2, **params)
 
 	callbacks = []
 	best_callback = keras.callbacks.ModelCheckpoint(
@@ -232,12 +272,6 @@ def main():
 	callbacks.append(best_callback)
 	callbacks.append(checkpoint_callback)
 
-	params = {"dataset": dataset, 
-				"batch_size": 64, 
-				"shuffle": True,
-				"n_samps": SAMPLE_RATE}
-	training_generator = DataGenerator(first=0.8, **params)
-	validation_generator = DataGenerator(last=0.2, **params)
 	model.fit(
 		x=training_generator,
 		validation_data=validation_generator,
@@ -253,7 +287,6 @@ def main():
 	validation_generator.on_epoch_end()
 	X_valid, y_valid = validation_generator.__getitem__(0)
 	meta_valid = validation_generator.get_meta(0)
-	print("X_valid: {}".format(X_valid))
 
 	prediction = model.predict(X_valid)
 	# print("prediction: {}, shape: {}".format(prediction, prediction.shape))
