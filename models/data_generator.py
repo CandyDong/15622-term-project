@@ -62,6 +62,13 @@ class DataGenerator(keras.utils.Sequence):
         # print("Returning data! Got X: {}, y: {}".format(X.shape,y.shape))
         return X, y
 
+    def get_meta(self, index):
+        indexes = self.indexes[index * self.batch_size : (index + 1) * self.batch_size]
+        meta = []
+        for i in indexes:
+            meta.append(self.dataset[i])
+        return meta
+
     def on_epoch_end(self):
         "Updates indexes after each epoch"
         self.indexes = np.arange(len(self.list_IDs))

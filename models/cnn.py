@@ -9,8 +9,7 @@ from tensorflow.keras import backend as K
 import ast
 import numpy as np
 from data_generator import DataGenerator
-
-pp = pprint.PrettyPrinter(indent=4, width=1)
+import math
 
 SAMPLE_RATE = 16384
 OUT_DIR = "../data"
@@ -20,20 +19,53 @@ MODEL_NAME = "E2E"
 
 NUM_EPOCH = 100
 BATCH_SIZE = 64
-N_DFT = 512
-N_HOP = 256
 
 META_FILE_PATH = os.path.join(OUT_DIR, "meta.csv")
 MODEL_SAVE_PATH = os.path.join(MODEL_DIR, "{}.h5".format(MODEL_NAME))
 BEST_MODEL_SAVE_PATH = os.path.join(MODEL_DIR, "{}_best.h5".format(MODEL_NAME))
 CHECKPOINT_MODEL_SAVE_PATH = os.path.join(MODEL_DIR, "{}_checkpoint.h5".format(MODEL_NAME))
+PREDICTION_FILE_PATH = os.path.join(OUT_DIR, "prediction.csv")
 
 if not os.path.exists(OUT_DIR):
 	os.makedirs(OUT_DIR)
 if not os.path.exists(MODEL_DIR):
 	os.makedirs(MODEL_DIR)
 
-PARAMETERS = sorted(["C", "M", "A", "D", "attack", "decay", "sustain", "sustain_level", "release"])
+''' 
+	generate `num` values in [min, max] 
+'''
+def generate_param(num, min, max):
+	ext = float(max - min)
+	return [i * ext / (num - 1) + min for i in range(num)]
+
+'''
+	generates a set of frequencies as per paper
+	paper: f = 2^(n/12)/ 440Hz with n in 0..15, 
+	corresponding to A4-C6
+'''
+def generate_freq(num):
+	return [math.pow(2, i / 12) * 440 for i in range(num)]
+
+NUM_CLASSES = 16
+PARAM_DICT = {
+			  # FM parameters
+			  "C": generate_freq(NUM_CLASSES),
+			  "M": generate_param(NUM_CLASSES, 1, 30), 
+			  "A": generate_param(NUM_CLASSES, 0.001, 1.0),
+			  "D": generate_param(NUM_CLASSES, 0, 1.5),
+
+			  # envelope function
+			  "attack": generate_param(NUM_CLASSES, 0, 1.0),
+			  "decay": generate_param(NUM_CLASSES, 0, 1.0),
+			  "sustain": generate_param(NUM_CLASSES, 0, 1.0),
+			  "sustain_level": generate_param(NUM_CLASSES, 0, 1.0),
+			  "release": generate_param(NUM_CLASSES, 0, 1.0)
+
+			  # low-pass filter with resonance
+			  # "f_cut": ,
+			  # "q": # resonance
+			}
+PARAMETERS = sorted(list(PARAM_DICT.keys()))
 
 
 def top_k_mean_accuracy(y_true, y_pred, k=5):
@@ -109,6 +141,7 @@ def get_c4_model():
 	print("+"*30)
 	return model
 
+
 def read_meta():
 	dataset = []
 	with open(META_FILE_PATH, 'r') as f:
@@ -116,6 +149,30 @@ def read_meta():
 		for row in reader:
 			dataset.append(row)
 	return dataset
+
+
+'''
+	decode the predicted one hot vector
+'''
+def decode(key, x):
+	ind = np.array(x).argmax()
+	return PARAM_DICT[key][ind]
+
+
+def reconstruct(prediction, meta):
+	print("prediction: {}".format(prediction))
+	with open(PREDICTION_FILE_PATH, 'w') as f:
+		writer = csv.DictWriter(f, fieldnames=["id", "original_filename"]+PARAMETERS)
+		writer.writeheader()
+		for i in range(prediction.shape[0]):
+			pred = {}
+			pred["id"] = meta[i]["id"]
+			pred["original_filename"] = meta[i]["filename"]
+			for j, param in enumerate(PARAMETERS):
+				vector = prediction[i][j:j+NUM_CLASSES]
+				value = decode(param, vector)
+				pred[param] = value
+			writer.writerow(pred)
 
 
 def main():
@@ -132,7 +189,6 @@ def main():
 
 
 	dataset = read_meta()
-	print(dataset[0])
 	label_size = len(np.fromstring(dataset[0]['label'][1:-1], dtype=float, sep=' '))
 	print("+" * 30)
 	print("dataset loaded.")
@@ -179,6 +235,15 @@ def main():
 
 	# Save model
 	model.save(MODEL_SAVE_PATH)
+
+	validation_generator.on_epoch_end()
+	X_valid, y_valid = validation_generator.__getitem__(0)
+	meta_valid = validation_generator.get_meta(0)
+	print("X_valid: {}".format(X_valid))
+
+	prediction = model.predict(X_valid)
+	# print("prediction: {}, shape: {}".format(prediction, prediction.shape))
+	reconstruct(prediction, meta_valid)
 
 
 
