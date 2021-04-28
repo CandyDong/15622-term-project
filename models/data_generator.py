@@ -76,7 +76,7 @@ class DataGenerator(keras.utils.Sequence):
 
     def on_epoch_end(self):
         "Updates indexes after each epoch"
-        print("dataset shuffled.")
+        # print("dataset shuffled.")
         self.indexes = np.arange(len(self.list_IDs))
         if self.shuffle is True:
             np.random.shuffle(self.indexes)

@@ -6,18 +6,21 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras import backend as K
+from tensorflow.keras.callbacks import CSVLogger
 import ast
 import numpy as np
 from data_generator import DataGenerator
 import math
 from synthplayer.oscillators import *
 from scipy.io.wavfile import write
+from kapre.time_frequency import STFT, Magnitude, MagnitudeToDecibel
 
 SAMPLE_RATE = 16384
 OUT_DIR = "../data"
 MODEL_DIR = "../saved_models/"
 WAV_DIR = "../data/wav_files"
 RECONSTRUCT_WAV_DIR = "../data/reconstructed_wav_files"
+# MODEL_NAME = "CONV6XL" 
 MODEL_NAME = "E2E" 
 
 NUM_EPOCH = 100
@@ -27,7 +30,9 @@ META_FILE_PATH = os.path.join(OUT_DIR, "meta.csv")
 MODEL_SAVE_PATH = os.path.join(MODEL_DIR, "{}.h5".format(MODEL_NAME))
 BEST_MODEL_SAVE_PATH = os.path.join(MODEL_DIR, "{}_best.h5".format(MODEL_NAME))
 CHECKPOINT_MODEL_SAVE_PATH = os.path.join(MODEL_DIR, "{}_checkpoint.h5".format(MODEL_NAME))
-PREDICTION_FILE_PATH = os.path.join(OUT_DIR, "prediction.csv")
+HISTORY_SAVE_PATH = os.path.join(MODEL_DIR, "{}_history.csv".format(MODEL_NAME))
+PREDICTION_FILE_PATH = os.path.join(OUT_DIR, "{}_prediction.csv".format(MODEL_NAME))
+
 
 if not os.path.exists(OUT_DIR):
 	os.makedirs(OUT_DIR)
@@ -71,7 +76,6 @@ PARAM_DICT = {
 			  # "q": # resonance
 			}
 PARAMETERS = sorted(list(PARAM_DICT.keys()))
-
 
 def top_k_mean_accuracy(y_true, y_pred, k=5):
 	"""
@@ -119,6 +123,7 @@ def get_e2e_model(label_size):
 	model.add(keras.layers.Conv2D(filters=71,  kernel_size=(3, 3), strides=(2, 2)))
 	model.add(keras.layers.Conv2D(filters=128,  kernel_size=(3, 4), strides=(2, 3)))
 	model.add(keras.layers.Conv2D(filters=128,  kernel_size=(3, 3), strides=(2, 2)))
+
 	model.add(keras.layers.Conv2D(filters=128,  kernel_size=(1, 1), strides=(2, 2)))
 	model.add(keras.layers.Conv2D(filters=128,  kernel_size=(1, 1), strides=(1, 2)))
 
@@ -141,23 +146,43 @@ def get_e2e_model(label_size):
 	print(model.summary())
 	return model
 
-def get_c4_model():
+def get_conv6xl_model(label_size):
 	model = keras.Sequential()
-	model.add(keras.Input(shape=(1,16384)))
-	model.add(keras.layers.Conv2D(filters=32,  kernel_size=(3, 4), strides=(2, 3), activation='relu', padding="same"))
-	model.add(keras.layers.Conv2D(filters=65,  kernel_size=(3, 4), strides=(2, 3), activation='relu', padding="same"))
-	model.add(keras.layers.Conv2D(filters=105,  kernel_size=(3, 4), strides=(2, 3), activation='relu', padding="same"))
-	model.add(keras.layers.Conv2D(filters=128,  kernel_size=(4, 5), strides=(3, 4), activation='relu', padding="same"))
+	model.add(keras.Input(shape=(SAMPLE_RATE, 1)))
+
+	model.add(STFT(
+		n_fft=512,
+		hop_length=256,
+		input_shape=(SAMPLE_RATE, 1),
+		input_data_format='channels_last'
+	))
+	model.add(Magnitude())
+	model.add(MagnitudeToDecibel())
+	model.add(keras.layers.Conv2D(filters=64,  kernel_size=(3, 3), strides=(2, 2)))
+	model.add(keras.layers.Conv2D(filters=128,  kernel_size=(3, 3), strides=(2, 2)))
+	model.add(keras.layers.Conv2D(filters=128,  kernel_size=(3, 4), strides=(2, 3)))
+	model.add(keras.layers.Conv2D(filters=128,  kernel_size=(3, 3), strides=(2, 2)))
+	model.add(keras.layers.Conv2D(filters=256,  kernel_size=(1, 1), strides=(2, 2)))
+	model.add(keras.layers.Conv2D(filters=256,  kernel_size=(1, 1), strides=(1, 2)))
 
 	model.add(keras.layers.Flatten())
 	model.add(keras.layers.Dense(512))
 
-	model.add(keras.layers.Dense(368, activation="sigmoid"))
-	model.compile(optimizer='adam', loss=keras.losses.CategoricalCrossentropy())
+	model.add(keras.layers.Dense(label_size, activation="sigmoid"))
+	model.compile(
+		optimizer='adam', 
+		loss=keras.losses.BinaryCrossentropy(), 
+		metrics=[
+			# @paper: 1) Mean Percentile Rank?
+			# mean_percentile_rank,
+			# @paper: 2) Top-k mean accuracy based evaluation
+			top_k_mean_accuracy,
+			# @paper: 3) Mean Absolute Error based evaluation
+			keras.metrics.MeanAbsoluteError(),
+			'accuracy'
+		],)
 
-	print("+"*30)
 	print(model.summary())
-	print("+"*30)
 	return model
 
 
@@ -222,8 +247,81 @@ def reconstruct_sound(param):
 	audio = generate_sound(synth_gen, param, 1.0, SAMPLE_RATE)
 	write(param["reconstruct_filename"], SAMPLE_RATE, audio)
 
+def print_summary(pred, truth):
+	PRECISION = 1
+	width = 8
+	names = "Parameter: "
+	act_s = "Actual:    "
+	pred_s = "Predicted: "
+	pred_i = "Pred. Indx:"
+	act_i = "Act. Index:"
+	diff_i = "Index Diff:"
+	for i, p in enumerate(PARAMETERS):
+		names += p.rjust(width)[:width]
+		act_s += f"{PARAM_DICT[p][truth[i]]:>8.2f}"
+		pred_s += f"{PARAM_DICT[p][pred[i]]:>8.2f}"
+		act_i += f"{truth[i]:>8}"
+		pred_i += f"{pred[i]:>8}"
+		diff_i += f"{pred[i]-truth[i]:>8}"
+
+	exact = 0.0
+	close = 0.0
+	for i, p in enumerate(PARAMETERS):
+		if pred[i] == truth[i]:
+			exact = exact + 1.0
+		if abs(pred[i] - truth[i]) <= PRECISION:
+			close = close + 1.0
+	exact_ratio = exact / len(PARAMETERS)
+	close_ratio = close / len(PARAMETERS)
+	print(names)
+	print(act_s)
+	print(pred_s)
+	print(act_i)
+	print(pred_i)
+	print(diff_i)
+	print("-" * 30)
+	print("exact_ratio: {}\nclose_ratio:{}".format(exact_ratio, close_ratio))
+	return exact_ratio, close_ratio
+
+def evaluate(model, X, y, meta):
+	num_examples = X.shape[0]
+	print("Number of examples evaluated: {}".format(num_examples))
+
+	y_pred = model.predict(X)
+	print("prediction: {}, shape: {}".format(y_pred, y_pred.shape))
+	
+	# from one hot to indices
+	y_pred_inds, y_inds = [], []
+	start = 0
+	for i, p in enumerate(PARAMETERS):
+		vals = PARAM_DICT[p]
+		num_levels = len(vals)
+		# print("{}: num_levels={}, vals={}".format(p, num_levels, vals))
+
+		s_pred, s = y_pred[:, start:start+num_levels], y[:, start:start+num_levels]
+		pred_inds, inds = np.argmax(s_pred, axis=1), np.argmax(s, axis=1)
+		
+		y_pred_inds.append(np.expand_dims(pred_inds, axis=1))
+		y_inds.append(np.expand_dims(inds, axis=1))
+
+		start += num_levels
+
+	y_pred_inds = np.hstack(y_pred_inds)
+	y_inds = np.hstack(y_inds)
+	print("y_pred_inds shape: {}, y_inds.shape: {}".format(y_pred_inds.shape, y_inds.shape))
+
+	for i in range(min(5, y_inds.shape[0])):
+		print_summary(y_pred_inds[i], y_inds[i])
+
+	# reconstruct(prediction, meta_valid)
+
+
 
 def main():
+	# delete previous history file
+	if os.path.exists(HISTORY_SAVE_PATH):
+		os.remove(HISTORY_SAVE_PATH)
+
 	gpu_avail = tf.test.is_gpu_available()  # True/False
 	cuda_gpu_avail = tf.test.is_gpu_available(cuda_only=True)  # True/False
 
@@ -245,9 +343,9 @@ def main():
 
 	if MODEL_NAME is "E2E":
 		model = get_e2e_model(label_size)
-	elif MODEL_NAME is "C4":
+	elif MODEL_NAME is "CONV6XL":
 		# not yet implemented
-		model = get_c4_model()
+		model = get_conv6xl_model(label_size)
 
 	params = {"dataset": dataset, 
 				"batch_size": BATCH_SIZE, 
@@ -271,14 +369,15 @@ def main():
 	)
 	callbacks.append(best_callback)
 	callbacks.append(checkpoint_callback)
+	callbacks.append(CSVLogger(HISTORY_SAVE_PATH, append=True))
 
-	model.fit(
+	history = model.fit(
 		x=training_generator,
 		validation_data=validation_generator,
 		epochs=NUM_EPOCH,
 		callbacks=callbacks,
 		initial_epoch=0,
-		verbose=0,  # https://github.com/tensorflow/tensorflow/issues/38064
+		verbose=1,  # https://github.com/tensorflow/tensorflow/issues/38064
 	)
 
 	# Save model
@@ -288,9 +387,7 @@ def main():
 	X_valid, y_valid = validation_generator.__getitem__(0)
 	meta_valid = validation_generator.get_meta(0)
 
-	prediction = model.predict(X_valid)
-	# print("prediction: {}, shape: {}".format(prediction, prediction.shape))
-	reconstruct(prediction, meta_valid)
+	evaluate(model, X_valid, y_valid, meta_valid)
 
 
 

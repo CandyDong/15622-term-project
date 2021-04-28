@@ -14,7 +14,7 @@ def get_args():
 	parser = argparse.ArgumentParser()
 	parser.add_argument("--length", type=float, dest="length", default=1.0, help="length of each sample in seconds")
 	parser.add_argument("--num_classes", type=int, dest="num_classes", default=16)
-	parser.add_argument("--size", type=int, dest="size", default=150)
+	parser.add_argument("--size", type=int, dest="size", default=1500)
 	parser.add_argument("--out_dir", type=str, dest="out_dir", default="../data")
 	parser.add_argument("--wav_dir", type=str, dest="wav_dir", default="../data/wav_files")
 	parser.add_argument("--sample_rate", type=int, dest="sample_rate", default=16384)
