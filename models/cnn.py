@@ -15,6 +15,8 @@ from synthplayer.oscillators import *
 from scipy.io.wavfile import write
 from kapre.time_frequency import STFT, Magnitude, MagnitudeToDecibel
 
+BEST = True
+
 SAMPLE_RATE = 16384
 OUT_DIR = "../data"
 MODEL_DIR = "../saved_models/"
@@ -31,7 +33,8 @@ MODEL_SAVE_PATH = os.path.join(MODEL_DIR, "{}.h5".format(MODEL_NAME))
 BEST_MODEL_SAVE_PATH = os.path.join(MODEL_DIR, "{}_best.h5".format(MODEL_NAME))
 CHECKPOINT_MODEL_SAVE_PATH = os.path.join(MODEL_DIR, "{}_checkpoint.h5".format(MODEL_NAME))
 HISTORY_SAVE_PATH = os.path.join(MODEL_DIR, "{}_history.csv".format(MODEL_NAME))
-PREDICTION_FILE_PATH = os.path.join(OUT_DIR, "{}_prediction.csv".format(MODEL_NAME))
+PREDICTION_FILE_PATH = os.path.join(MODEL_DIR, "{}_prediction.csv".format(MODEL_NAME))
+SUMMARY_FILE_PATH = os.path.join(MODEL_DIR, "{}_summary.txt".format(MODEL_NAME))
 
 
 if not os.path.exists(OUT_DIR):
@@ -204,7 +207,6 @@ def decode(key, x):
 
 
 def reconstruct(prediction, meta):
-	print("prediction: {}".format(prediction))
 	with open(PREDICTION_FILE_PATH, 'w') as f:
 		writer = csv.DictWriter(f, fieldnames=["id", "original_filename", "reconstruct_filename"]+PARAMETERS)
 		writer.writeheader()
@@ -246,10 +248,12 @@ def reconstruct_sound(param):
 	synth_gen = generate_synth(param, SAMPLE_RATE)
 	audio = generate_sound(synth_gen, param, 1.0, SAMPLE_RATE)
 	write(param["reconstruct_filename"], SAMPLE_RATE, audio)
+	print("{} reconstructed".format(param["reconstruct_filename"]))
 
-def print_summary(pred, truth):
+def print_summary(example, pred, truth, save=False):
 	PRECISION = 1
 	width = 8
+
 	names = "Parameter: "
 	act_s = "Actual:    "
 	pred_s = "Predicted: "
@@ -273,14 +277,23 @@ def print_summary(pred, truth):
 			close = close + 1.0
 	exact_ratio = exact / len(PARAMETERS)
 	close_ratio = close / len(PARAMETERS)
+	print("Example {}: ".format(example))
 	print(names)
 	print(act_s)
 	print(pred_s)
 	print(act_i)
 	print(pred_i)
 	print(diff_i)
-	print("-" * 30)
 	print("exact_ratio: {}\nclose_ratio:{}".format(exact_ratio, close_ratio))
+	print("-" * 30)
+	
+
+
+	with open(SUMMARY_FILE_PATH, 'a') as f:
+		f.write("{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n".format(
+			"Example {}: ".format(example),
+			names,
+			act_s, pred_s, act_i, pred_i, diff_i, exact_ratio, close_ratio, "-" * 30))
 	return exact_ratio, close_ratio
 
 def evaluate(model, X, y, meta):
@@ -310,10 +323,10 @@ def evaluate(model, X, y, meta):
 	y_inds = np.hstack(y_inds)
 	print("y_pred_inds shape: {}, y_inds.shape: {}".format(y_pred_inds.shape, y_inds.shape))
 
-	for i in range(min(5, y_inds.shape[0])):
-		print_summary(y_pred_inds[i], y_inds[i])
+	for i in range(y_inds.shape[0]):
+		print_summary(meta[i]["id"], y_pred_inds[i], y_inds[i], save=True)
 
-	# reconstruct(prediction, meta_valid)
+	reconstruct(y_pred, meta)
 
 
 
@@ -321,6 +334,10 @@ def main():
 	# delete previous history file
 	if os.path.exists(HISTORY_SAVE_PATH):
 		os.remove(HISTORY_SAVE_PATH)
+	if os.path.exists(SUMMARY_FILE_PATH):
+		os.remove(SUMMARY_FILE_PATH)
+	for f in os.listdir(RECONSTRUCT_WAV_DIR):
+		os.remove(os.path.join(RECONSTRUCT_WAV_DIR, f))
 
 	gpu_avail = tf.test.is_gpu_available()  # True/False
 	cuda_gpu_avail = tf.test.is_gpu_available(cuda_only=True)  # True/False
@@ -371,17 +388,27 @@ def main():
 	callbacks.append(checkpoint_callback)
 	callbacks.append(CSVLogger(HISTORY_SAVE_PATH, append=True))
 
-	history = model.fit(
-		x=training_generator,
-		validation_data=validation_generator,
-		epochs=NUM_EPOCH,
-		callbacks=callbacks,
-		initial_epoch=0,
-		verbose=1,  # https://github.com/tensorflow/tensorflow/issues/38064
-	)
+	if BEST:
+		print(
+			f"Evaluate best model: {BEST_MODEL_SAVE_PATH}"
+		)
+		model = keras.models.load_model(
+			BEST_MODEL_SAVE_PATH,
+			custom_objects={"top_k_mean_accuracy": top_k_mean_accuracy},
+		)
+	else:
 
-	# Save model
-	model.save(MODEL_SAVE_PATH)
+		history = model.fit(
+			x=training_generator,
+			validation_data=validation_generator,
+			epochs=NUM_EPOCH,
+			callbacks=callbacks,
+			initial_epoch=0,
+			verbose=1,  # https://github.com/tensorflow/tensorflow/issues/38064
+		)
+
+		# Save model
+		model.save(MODEL_SAVE_PATH)
 
 	validation_generator.on_epoch_end()
 	X_valid, y_valid = validation_generator.__getitem__(0)
