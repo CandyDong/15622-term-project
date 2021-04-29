@@ -197,28 +197,17 @@ def read_meta():
 			dataset.append(row)
 	return dataset
 
-
-'''
-	decode the predicted one hot vector
-'''
-def decode(key, x):
-	ind = np.array(x).argmax()
-	return PARAM_DICT[key][ind]
-
-
-def reconstruct(prediction, meta):
+def reconstruct(pred_inds, meta):
 	with open(PREDICTION_FILE_PATH, 'w') as f:
 		writer = csv.DictWriter(f, fieldnames=["id", "original_filename", "reconstruct_filename"]+PARAMETERS)
 		writer.writeheader()
-		for i in range(prediction.shape[0]):
+		for i in range(pred_inds.shape[0]):
 			pred = {}
 			pred["id"] = meta[i]["id"]
 			pred["original_filename"] = meta[i]["filename"]
 			pred["reconstruct_filename"] = os.path.join(RECONSTRUCT_WAV_DIR, "{:05d}.wav".format(int(pred["id"])))
 			for j, param in enumerate(PARAMETERS):
-				vector = prediction[i][j:j+NUM_CLASSES]
-				value = decode(param, vector)
-				pred[param] = value
+				pred[param] = PARAM_DICT[param][pred_inds[i][j]]
 			reconstruct_sound(pred)
 			writer.writerow(pred)
 
@@ -286,11 +275,9 @@ def print_summary(example, pred, truth, save=False):
 	print(diff_i)
 	print("exact_ratio: {}\nclose_ratio:{}".format(exact_ratio, close_ratio))
 	print("-" * 30)
-	
-
 
 	with open(SUMMARY_FILE_PATH, 'a') as f:
-		f.write("{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n".format(
+		f.write("{}\n{}\n{}\n{}\n{}\n{}\n{}\nexact_ratio: {}\nclose_ratio: {}\n{}\n".format(
 			"Example {}: ".format(example),
 			names,
 			act_s, pred_s, act_i, pred_i, diff_i, exact_ratio, close_ratio, "-" * 30))
@@ -326,8 +313,7 @@ def evaluate(model, X, y, meta):
 	for i in range(y_inds.shape[0]):
 		print_summary(meta[i]["id"], y_pred_inds[i], y_inds[i], save=True)
 
-	reconstruct(y_pred, meta)
-
+	reconstruct(y_pred_inds, meta)
 
 
 def main():
@@ -397,7 +383,6 @@ def main():
 			custom_objects={"top_k_mean_accuracy": top_k_mean_accuracy},
 		)
 	else:
-
 		history = model.fit(
 			x=training_generator,
 			validation_data=validation_generator,
