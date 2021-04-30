@@ -79,6 +79,7 @@ def generate_dataset(args, param_set, labels):
 
 		synth_gen = generate_synth(param, args.sample_rate)
 		audio = generate_sound(synth_gen, param, args.length, args.sample_rate)
+		# print("audio:{}".format(audio))
 		write(d["filename"], args.sample_rate, audio)
 
 	return dataset

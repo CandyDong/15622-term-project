@@ -12,7 +12,7 @@ import numpy as np
 from data_generator import DataGenerator
 import math
 from synthplayer.oscillators import *
-from scipy.io.wavfile import write
+from scipy.io.wavfile import write, read
 from kapre.time_frequency import STFT, Magnitude, MagnitudeToDecibel
 
 BEST = True
@@ -21,7 +21,9 @@ SAMPLE_RATE = 16384
 OUT_DIR = "../data"
 MODEL_DIR = "../saved_models/"
 WAV_DIR = "../data/wav_files"
+SAMPLE_WAV_DIR = "../data/sample_wav_files/original"
 RECONSTRUCT_WAV_DIR = "../data/reconstructed_wav_files"
+SAMPLE_RECONSTRUCT_WAV_DIR = "../data/sample_wav_files/reconstructed"
 # MODEL_NAME = "CONV6XL" 
 MODEL_NAME = "E2E" 
 
@@ -43,6 +45,10 @@ if not os.path.exists(MODEL_DIR):
 	os.makedirs(MODEL_DIR)
 if not os.path.exists(RECONSTRUCT_WAV_DIR):
 	os.makedirs(RECONSTRUCT_WAV_DIR)
+if not os.path.exists(SAMPLE_WAV_DIR):
+	os.makedirs(SAMPLE_WAV_DIR)
+if not os.path.exists(SAMPLE_RECONSTRUCT_WAV_DIR):
+	os.makedirs(SAMPLE_RECONSTRUCT_WAV_DIR)
 
 ''' 
 	generate `num` values in [min, max] 
@@ -316,6 +322,65 @@ def evaluate(model, X, y, meta):
 	reconstruct(y_pred_inds, meta)
 
 
+def evaluate_sample(model, sample_file_path, filename):
+	sound = read(sample_file_path)
+	sample_rate, data = sound
+	print("sample rate: {}, sound_data: {}".format(sample_rate, data))
+
+	X = [data]
+	Xd = np.expand_dims(np.vstack(X), axis=2)
+	print("Xd.shape: {}".format(Xd.shape))
+
+	y_pred = model.predict(Xd)[0]
+
+	result = []
+	start = 0
+	for i, p in enumerate(PARAMETERS):
+		vals = PARAM_DICT[p]
+		num_levels = len(vals)
+		# print("{}: num_levels={}, vals={}".format(p, num_levels, vals))
+
+		s_pred = y_pred[start:start+num_levels]
+		pred_ind = np.argmax(s_pred)
+		
+		result.append((p, pred_ind, PARAM_DICT[p][pred_ind]))
+
+		start += num_levels
+
+	print("result: {}".format(result))
+
+	params = {p: v for p, _, v in result}
+	synth_gen = generate_synth(params, SAMPLE_RATE)
+	audio = generate_sound(synth_gen, params, 1.0, SAMPLE_RATE)
+	write(os.path.join(SAMPLE_RECONSTRUCT_WAV_DIR, filename), SAMPLE_RATE, audio)
+
+	# result: [('A', 15, 1.0), ('C', 9, 739.9888454232688), ('D', 3, 0.3), 
+	# ('M', 6, 12.6), ('attack', 4, 0.26666666666666666), ('decay', 2, 0.13333333333333333), 
+	# ('release', 3, 0.2), ('sustain', 13, 0.8666666666666667), ('sustain_level', 8, 0.5333333333333333)]
+
+	# print_summary(filename, pred, truth, save=False)
+
+	# Decode prediction, and reconstruct output
+	# predicted = parameters.encoding_to_settings(result)
+
+def generate_sample(sample_path):
+	params = {
+			  "C": 783.991,
+			  "M": 12.6, 
+			  "A": 1.0,
+			  "D": 0.5,
+			  "attack": 0.2667,
+			  "decay": 0.6,
+			  "sustain": 0.2667,
+			  "sustain_level": 0.0,
+			  "release": 0.8
+			 }
+	synth_gen = generate_synth(params, SAMPLE_RATE)
+	audio = generate_sound(synth_gen, params, 1.0, SAMPLE_RATE)
+	write(sample_path, SAMPLE_RATE, audio)
+
+
+
 def main():
 	# delete previous history file
 	if os.path.exists(HISTORY_SAVE_PATH):
@@ -389,7 +454,7 @@ def main():
 			epochs=NUM_EPOCH,
 			callbacks=callbacks,
 			initial_epoch=0,
-			verbose=1,  # https://github.com/tensorflow/tensorflow/issues/38064
+			verbose=1,
 		)
 
 		# Save model
@@ -399,7 +464,11 @@ def main():
 	X_valid, y_valid = validation_generator.__getitem__(0)
 	meta_valid = validation_generator.get_meta(0)
 
-	evaluate(model, X_valid, y_valid, meta_valid)
+	# evaluate(model, X_valid, y_valid, meta_valid)
+
+	# generate_sample(os.path.join(SAMPLE_WAV_DIR, "3.wav"))
+	evaluate_sample(model, os.path.join(SAMPLE_WAV_DIR, "sample.wav"), "sample.wav")
+	# evaluate_sample(model, os.path.join(WAV_DIR, "00000.wav"))
 
 
 
