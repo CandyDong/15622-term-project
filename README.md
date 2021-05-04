@@ -65,3 +65,18 @@ More parameters which can be tuned in `models/cnn.py` are listed in the table be
     </tr>
   </tbody></table>
 </div>
+
+## Generate and Evaluate Individual Samples
+
+To generate a sample
+```bash
+cd models
+python generate_sample.py
+```
+Command line arguments can be used to tune the parameters of the FM synthesizer.
+
+To evaluate a sample (any wav file works)
+```bash
+cd models
+python evaluate_sampe.py 
+```

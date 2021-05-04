@@ -16,10 +16,9 @@ from scipy.io.wavfile import write, read
 from kapre.time_frequency import STFT, Magnitude, MagnitudeToDecibel
 from synth_generator import *
 
-BEST = True # whether the skip training and load the best model
-if BEST: print("Loading BEST model; Training skipped!!!")
+BEST = False # whether the skip training and load the best model
 
-NUM_EPOCH = 1
+NUM_EPOCH = 100
 BATCH_SIZE = 64
 
 SAMPLE_RATE = 16384
@@ -286,66 +285,6 @@ def evaluate(model, X, y, meta):
 
 	reconstruct(y_pred_inds, meta)
 
-
-def evaluate_sample(model, sample_file_path, filename):
-	sound = read(sample_file_path)
-	sample_rate, data = sound
-	print("sample rate: {}, sound_data: {}".format(sample_rate, data))
-
-	X = [data]
-	Xd = np.expand_dims(np.vstack(X), axis=2)
-	print("Xd.shape: {}".format(Xd.shape))
-
-	y_pred = model.predict(Xd)[0]
-
-	result = []
-	start = 0
-	for i, p in enumerate(PARAMETERS):
-		vals = PARAM_DICT[p]
-		num_levels = len(vals)
-		# print("{}: num_levels={}, vals={}".format(p, num_levels, vals))
-
-		s_pred = y_pred[start:start+num_levels]
-		pred_ind = np.argmax(s_pred)
-		
-		result.append((p, pred_ind, PARAM_DICT[p][pred_ind]))
-
-		start += num_levels
-
-	print("result: {}".format(result))
-
-	params = {p: v for p, _, v in result}
-	synth_gen = generate_synth(params, SAMPLE_RATE)
-	audio = generate_sound(synth_gen, params, 1.0, SAMPLE_RATE)
-	write(os.path.join(SAMPLE_RECONSTRUCT_WAV_DIR, filename), SAMPLE_RATE, audio)
-
-	# result: [('A', 15, 1.0), ('C', 9, 739.9888454232688), ('D', 3, 0.3), 
-	# ('M', 6, 12.6), ('attack', 4, 0.26666666666666666), ('decay', 2, 0.13333333333333333), 
-	# ('release', 3, 0.2), ('sustain', 13, 0.8666666666666667), ('sustain_level', 8, 0.5333333333333333)]
-
-	# print_summary(filename, pred, truth, save=False)
-
-	# Decode prediction, and reconstruct output
-	# predicted = parameters.encoding_to_settings(result)
-
-def generate_sample(sample_path):
-	params = {
-			  "C": 783.991,
-			  "M": 12.6, 
-			  "A": 1.0,
-			  "D": 0.5,
-			  "attack": 0.2667,
-			  "decay": 0.6,
-			  "sustain": 0.2667,
-			  "sustain_level": 0.0,
-			  "release": 0.8
-			 }
-	synth_gen = generate_synth(params, SAMPLE_RATE)
-	audio = generate_sound(synth_gen, params, 1.0, SAMPLE_RATE)
-	write(sample_path, SAMPLE_RATE, audio)
-
-
-
 def main():
 	# delete previous history file
 	if os.path.exists(HISTORY_SAVE_PATH):
@@ -374,12 +313,6 @@ def main():
 	print("label size = {}".format(label_size))
 	print("+" * 30)
 
-	if MODEL_NAME is "E2E":
-		model = get_e2e_model(label_size)
-	elif MODEL_NAME is "CONV6XL":
-		# not yet implemented
-		model = get_conv6xl_model(label_size)
-
 	params = {"dataset": dataset, 
 				"batch_size": BATCH_SIZE, 
 				"shuffle": True,
@@ -405,6 +338,7 @@ def main():
 	callbacks.append(CSVLogger(HISTORY_SAVE_PATH, append=True))
 
 	if BEST:
+		print("Loading BEST model; Training skipped!!!")
 		print(
 			f"Evaluate best model: {BEST_MODEL_SAVE_PATH}"
 		)
@@ -413,6 +347,11 @@ def main():
 			custom_objects={"top_k_mean_accuracy": top_k_mean_accuracy},
 		)
 	else:
+		if MODEL_NAME is "E2E":
+			model = get_e2e_model(label_size)
+		elif MODEL_NAME is "CONV6XL":
+			# not yet implemented
+			model = get_conv6xl_model(label_size)
 		history = model.fit(
 			x=training_generator,
 			validation_data=validation_generator,
@@ -430,10 +369,6 @@ def main():
 	meta_valid = validation_generator.get_meta(0)
 
 	evaluate(model, X_valid, y_valid, meta_valid)
-
-	# generate_sample(os.path.join(SAMPLE_WAV_DIR, "3.wav"))
-	# evaluate_sample(model, os.path.join(SAMPLE_WAV_DIR, "sample.wav"), "sample.wav")
-	# evaluate_sample(model, os.path.join(WAV_DIR, "00000.wav"))
 
 
 if __name__ == '__main__':

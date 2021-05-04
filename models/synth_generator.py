@@ -4,7 +4,7 @@ import random
 import math
 import argparse
 import os
-from scipy.io.wavfile import write
+from scipy.io.wavfile import write, read
 import csv
 import pprint
 
