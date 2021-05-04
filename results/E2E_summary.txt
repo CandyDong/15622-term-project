@@ -1,0 +1,640 @@
+Example 41: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.80  987.77    1.50   12.60    1.00    0.13    0.40    0.20    0.40
+Predicted:     0.80  987.77    1.50   12.60    1.00    0.13    0.40    0.20    0.40
+Act. Index:      12      14      15       6      15       2       6       3       6
+Pred. Indx:      12      14      15       6      15       2       6       3       6
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 33: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.80  554.37    1.20   10.67    0.47    0.40    0.87    0.00    0.27
+Predicted:     0.80  554.37    1.20   10.67    0.47    0.40    0.87    0.00    0.27
+Act. Index:      12       4      12       5       7       6      13       0       4
+Pred. Indx:      12       4      12       5       7       6      13       0       4
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 90: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        1.00  659.26    1.50   16.47    0.33    0.60    0.87    1.00    0.47
+Predicted:     1.00  659.26    1.50   16.47    0.33    0.60    0.87    1.00    0.47
+Act. Index:      15       7      15       8       5       9      13      15       7
+Pred. Indx:      15       7      15       8       5       9      13      15       7
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 148: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.07  523.25    1.10    6.80    0.73    0.47    0.47    0.13    0.40
+Predicted:     0.00  523.25    1.10    6.80    0.73    0.47    0.47    0.13    0.13
+Act. Index:       1       3      11       3      11       7       7       2       6
+Pred. Indx:       0       3      11       3      11       7       7       2       2
+Index Diff:      -1       0       0       0       0       0       0       0      -4
+exact_ratio: 0.7777777777777778
+close_ratio: 0.8888888888888888
+------------------------------
+Example 171: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.20  466.16    0.90   14.53    0.40    0.73    0.27    0.00    0.87
+Predicted:     0.20  466.16    0.90   14.53    0.40    0.73    0.27    0.00    0.87
+Act. Index:       3       1       9       7       6      11       4       0      13
+Pred. Indx:       3       1       9       7       6      11       4       0      13
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 23: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.73  987.77    1.50    8.73    0.20    0.53    0.40    0.47    0.33
+Predicted:     0.73  987.77    1.50    8.73    0.20    0.53    0.40    0.47    0.33
+Act. Index:      11      14      15       4       3       8       6       7       5
+Pred. Indx:      11      14      15       4       3       8       6       7       5
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 45: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.60  880.00    1.50   22.27    0.80    0.27    0.27    0.20    0.20
+Predicted:     0.60  880.00    1.50   22.27    0.80    0.27    0.27    0.20    0.20
+Act. Index:       9      12      15      11      12       4       4       3       3
+Pred. Indx:       9      12      15      11      12       4       4       3       3
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 66: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.47  739.99    0.60    6.80    0.93    0.27    0.60    0.33    1.00
+Predicted:     0.47  739.99    0.60    6.80    0.93    0.27    0.60    0.33    1.00
+Act. Index:       7       9       6       3      14       4       9       5      15
+Pred. Indx:       7       9       6       3      14       4       9       5      15
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 293: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.20  987.77    1.40   30.00    0.07    0.20    0.93    0.87    0.67
+Predicted:     0.20  987.77    1.40   30.00    0.07    0.20    0.93    0.87    0.67
+Act. Index:       3      14      14      15       1       3      14      13      10
+Pred. Indx:       3      14      14      15       1       3      14      13      10
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 138: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.07  739.99    0.00    6.80    0.47    0.20    0.40    0.40    0.20
+Predicted:     0.07  739.99    0.00   16.47    0.40    0.53    0.73    0.93    0.60
+Act. Index:       1       9       0       3       7       3       6       6       3
+Pred. Indx:       1       9       0       8       6       8      11      14       9
+Index Diff:       0       0       0       5      -1       5       5       8       6
+exact_ratio: 0.3333333333333333
+close_ratio: 0.4444444444444444
+------------------------------
+Example 0: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.53  739.99    1.40   16.47    0.53    0.27    0.40    0.33    0.00
+Predicted:     0.53  739.99    1.40   16.47    0.53    0.27    0.40    0.33    0.00
+Act. Index:       8       9      14       8       8       4       6       5       0
+Pred. Indx:       8       9      14       8       8       4       6       5       0
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 155: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.60  932.33    0.10   28.07    0.07    0.20    0.07    0.47    0.80
+Predicted:     0.60  932.33    0.10   28.07    0.07    0.20    0.07    0.47    0.80
+Act. Index:       9      13       1      14       1       3       1       7      12
+Pred. Indx:       9      13       1      14       1       3       1       7      12
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 210: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.33  554.37    1.10   14.53    0.53    0.87    0.87    0.00    0.93
+Predicted:     0.33  554.37    1.10   14.53    0.53    0.87    0.87    0.00    0.93
+Act. Index:       5       4      11       7       8      13      13       0      14
+Pred. Indx:       5       4      11       7       8      13      13       0      14
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 207: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.07  554.37    0.40   14.53    0.40    0.93    0.53    0.93    0.87
+Predicted:     0.07  554.37    0.40   14.53    0.40    0.93    0.53    0.93    1.00
+Act. Index:       1       4       4       7       6      14       8      14      13
+Pred. Indx:       1       4       4       7       6      14       8      14      15
+Index Diff:       0       0       0       0       0       0       0       0       2
+exact_ratio: 0.8888888888888888
+close_ratio: 0.8888888888888888
+------------------------------
+Example 130: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.60  440.00    1.10   20.33    0.40    0.73    0.00    0.20    1.00
+Predicted:     0.60  440.00    1.10   20.33    0.40    0.73    0.00    0.20    1.00
+Act. Index:       9       0      11      10       6      11       0       3      15
+Pred. Indx:       9       0      11      10       6      11       0       3      15
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 12: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.93  622.25    0.30   22.27    0.47    0.80    0.07    0.20    0.27
+Predicted:     0.93  622.25    0.30   22.27    0.47    0.80    0.07    0.20    0.27
+Act. Index:      14       6       3      11       7      12       1       3       4
+Pred. Indx:      14       6       3      11       7      12       1       3       4
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 282: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        1.00  587.33    1.50   16.47    0.73    0.47    0.33    0.60    0.60
+Predicted:     1.00  587.33    1.50   16.47    0.73    0.47    0.33    0.60    0.60
+Act. Index:      15       5      15       8      11       7       5       9       9
+Pred. Indx:      15       5      15       8      11       7       5       9       9
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 78: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.47  440.00    0.20   14.53    0.67    0.13    0.67    1.00    0.93
+Predicted:     0.47  440.00    0.20   14.53    0.67    0.13    0.67    1.00    0.93
+Act. Index:       7       0       2       7      10       2      10      15      14
+Pred. Indx:       7       0       2       7      10       2      10      15      14
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 63: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.87  830.61    1.40   22.27    0.60    0.27    0.87    0.33    0.67
+Predicted:     0.87  830.61    1.40   22.27    0.60    0.27    0.87    0.33    0.67
+Act. Index:      13      11      14      11       9       4      13       5      10
+Pred. Indx:      13      11      14      11       9       4      13       5      10
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 10: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.47  440.00    1.30    2.93    0.40    0.73    0.33    0.80    0.13
+Predicted:     0.47  440.00    1.30    2.93    0.40    0.73    0.33    0.80    0.13
+Act. Index:       7       0      13       1       6      11       5      12       2
+Pred. Indx:       7       0      13       1       6      11       5      12       2
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 76: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.13  523.25    1.40   16.47    0.67    0.20    0.27    0.67    0.80
+Predicted:     0.13  523.25    1.40   16.47    0.67    0.20    0.27    0.67    0.80
+Act. Index:       2       3      14       8      10       3       4      10      12
+Pred. Indx:       2       3      14       8      10       3       4      10      12
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 58: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.33  493.88    0.70   20.33    0.47    0.60    0.33    0.07    0.87
+Predicted:     0.33  493.88    0.70   20.33    0.47    0.60    0.33    0.07    0.87
+Act. Index:       5       2       7      10       7       9       5       1      13
+Pred. Indx:       5       2       7      10       7       9       5       1      13
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 35: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.67  830.61    0.40   26.13    0.07    0.60    1.00    0.60    0.47
+Predicted:     0.67  830.61    0.40   26.13    0.07    0.60    1.00    0.60    0.47
+Act. Index:      10      11       4      13       1       9      15       9       7
+Pred. Indx:      10      11       4      13       1       9      15       9       7
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 253: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.20  783.99    1.50   26.13    0.40    0.40    0.93    0.67    0.87
+Predicted:     0.20  783.99    1.50   26.13    0.40    0.40    0.93    0.67    0.87
+Act. Index:       3      10      15      13       6       6      14      10      13
+Pred. Indx:       3      10      15      13       6       6      14      10      13
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 189: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.67  880.00    0.00   16.47    0.40    0.40    0.80    0.53    0.00
+Predicted:     0.67  880.00    0.00   16.47    0.40    0.13    0.80    0.53    0.00
+Act. Index:      10      12       0       8       6       6      12       8       0
+Pred. Indx:      10      12       0       8       6       2      12       8       0
+Index Diff:       0       0       0       0       0      -4       0       0       0
+exact_ratio: 0.8888888888888888
+close_ratio: 0.8888888888888888
+------------------------------
+Example 215: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.07  987.77    1.00   24.20    0.13    0.53    0.60    0.20    0.60
+Predicted:     0.07  987.77    1.00   24.20    0.13    0.53    1.00    0.20    0.60
+Act. Index:       1      14      10      12       2       8       9       3       9
+Pred. Indx:       1      14      10      12       2       8      15       3       9
+Index Diff:       0       0       0       0       0       0       6       0       0
+exact_ratio: 0.8888888888888888
+close_ratio: 0.8888888888888888
+------------------------------
+Example 256: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.27  622.25    1.00   14.53    1.00    0.40    0.80    0.80    0.13
+Predicted:     0.27  622.25    1.00   14.53    1.00    0.40    0.80    0.80    0.13
+Act. Index:       4       6      10       7      15       6      12      12       2
+Pred. Indx:       4       6      10       7      15       6      12      12       2
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 77: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.73  440.00    0.40    4.87    0.20    0.07    0.47    0.47    0.00
+Predicted:     0.73  440.00    0.40    4.87    0.20    0.07    0.47    0.47    0.00
+Act. Index:      11       0       4       2       3       1       7       7       0
+Pred. Indx:      11       0       4       2       3       1       7       7       0
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 153: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.73  880.00    0.90    8.73    0.93    0.27    0.47    0.80    0.27
+Predicted:     0.73  880.00    0.90    8.73    0.93    0.27    0.47    0.80    0.27
+Act. Index:      11      12       9       4      14       4       7      12       4
+Pred. Indx:      11      12       9       4      14       4       7      12       4
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 262: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.60 1046.50    1.10   12.60    0.47    0.60    0.93    0.27    0.73
+Predicted:     0.60 1046.50    1.10   12.60    0.47    0.60    0.93    0.27    0.73
+Act. Index:       9      15      11       6       7       9      14       4      11
+Pred. Indx:       9      15      11       6       7       9      14       4      11
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 201: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.27 1046.50    0.70    6.80    0.40    0.07    0.80    0.00    0.60
+Predicted:     0.27 1046.50    0.70    6.80    0.27    0.67    0.60    0.00    0.60
+Act. Index:       4      15       7       3       6       1      12       0       9
+Pred. Indx:       4      15       7       3       4      10       9       0       9
+Index Diff:       0       0       0       0      -2       9      -3       0       0
+exact_ratio: 0.6666666666666666
+close_ratio: 0.6666666666666666
+------------------------------
+Example 184: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.13  783.99    0.60   12.60    0.87    0.27    0.07    0.20    0.73
+Predicted:     0.13  783.99    0.60   12.60    0.87    0.27    0.07    0.20    0.07
+Act. Index:       2      10       6       6      13       4       1       3      11
+Pred. Indx:       2      10       6       6      13       4       1       3       1
+Index Diff:       0       0       0       0       0       0       0       0     -10
+exact_ratio: 0.8888888888888888
+close_ratio: 0.8888888888888888
+------------------------------
+Example 193: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        1.00  698.46    0.90   24.20    0.73    0.87    0.53    0.67    0.40
+Predicted:     1.00  698.46    0.90   24.20    0.73    0.87    0.53    0.67    0.40
+Act. Index:      15       8       9      12      11      13       8      10       6
+Pred. Indx:      15       8       9      12      11      13       8      10       6
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 227: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.67  987.77    1.00   12.60    0.07    0.33    0.80    0.33    1.00
+Predicted:     0.67  987.77    1.00   12.60    0.07    0.33    0.80    0.33    1.00
+Act. Index:      10      14      10       6       1       5      12       5      15
+Pred. Indx:      10      14      10       6       1       5      12       5      15
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 185: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        1.00  739.99    1.00   18.40    0.27    0.53    0.67    0.73    0.33
+Predicted:     1.00  739.99    1.00   18.40    0.27    0.53    0.67    0.73    0.33
+Act. Index:      15       9      10       9       4       8      10      11       5
+Pred. Indx:      15       9      10       9       4       8      10      11       5
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 259: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.60 1046.50    0.60   30.00    0.33    0.93    0.93    1.00    0.00
+Predicted:     0.60 1046.50    0.60   30.00    0.33    0.93    0.93    1.00    0.00
+Act. Index:       9      15       6      15       5      14      14      15       0
+Pred. Indx:       9      15       6      15       5      14      14      15       0
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 123: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.27  587.33    0.90   12.60    0.33    0.47    0.33    0.07    0.93
+Predicted:     0.27  587.33    0.90   12.60    0.33    0.47    0.33    0.07    0.93
+Act. Index:       4       5       9       6       5       7       5       1      14
+Pred. Indx:       4       5       9       6       5       7       5       1      14
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 62: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.93  493.88    0.30    6.80    0.93    0.87    0.80    0.87    0.20
+Predicted:     0.93  493.88    0.30    6.80    0.93    0.87    0.80    0.87    0.20
+Act. Index:      14       2       3       3      14      13      12      13       3
+Pred. Indx:      14       2       3       3      14      13      12      13       3
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 96: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.13  523.25    0.50   24.20    0.60    0.33    0.00    0.07    0.73
+Predicted:     0.13  523.25    0.50   24.20    0.60    0.33    0.00    0.07    0.73
+Act. Index:       2       3       5      12       9       5       0       1      11
+Pred. Indx:       2       3       5      12       9       5       0       1      11
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 192: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.13  440.00    0.60    6.80    0.47    0.87    0.87    0.33    0.87
+Predicted:     0.13  440.00    0.60    6.80    0.47    0.87    0.87    0.33    0.87
+Act. Index:       2       0       6       3       7      13      13       5      13
+Pred. Indx:       2       0       6       3       7      13      13       5      13
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 178: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.53 1046.50    0.70    4.87    0.00    0.87    1.00    0.33    0.73
+Predicted:     0.53 1046.50    0.70    4.87    0.00    0.87    1.00    0.33    0.73
+Act. Index:       8      15       7       2       0      13      15       5      11
+Pred. Indx:       8      15       7       2       0      13      15       5      11
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 151: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.60  659.26    0.00   26.13    0.73    0.27    0.87    0.40    0.07
+Predicted:     0.60  659.26    0.00   26.13    0.73    0.27    0.87    0.67    0.07
+Act. Index:       9       7       0      13      11       4      13       6       1
+Pred. Indx:       9       7       0      13      11       4      13      10       1
+Index Diff:       0       0       0       0       0       0       0       4       0
+exact_ratio: 0.8888888888888888
+close_ratio: 0.8888888888888888
+------------------------------
+Example 208: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.53  659.26    1.30    1.00    0.80    0.60    1.00    0.00    0.60
+Predicted:     0.40  659.26    1.30    1.00    0.40    0.53    0.47    0.47    0.53
+Act. Index:       8       7      13       0      12       9      15       0       9
+Pred. Indx:       6       7      13       0       6       8       7       7       8
+Index Diff:      -2       0       0       0      -6      -1      -8       7      -1
+exact_ratio: 0.3333333333333333
+close_ratio: 0.5555555555555556
+------------------------------
+Example 1: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.73  698.46    0.70   16.47    0.00    0.53    0.33    0.20    0.93
+Predicted:     0.73  698.46    0.70   16.47    0.00    0.53    0.33    0.20    0.93
+Act. Index:      11       8       7       8       0       8       5       3      14
+Pred. Indx:      11       8       7       8       0       8       5       3      14
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 147: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.53  523.25    0.20   10.67    1.00    0.00    0.67    0.93    0.93
+Predicted:     0.53  523.25    0.20   10.67    1.00    0.00    0.67    0.93    0.93
+Act. Index:       8       3       2       5      15       0      10      14      14
+Pred. Indx:       8       3       2       5      15       0      10      14      14
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 173: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.13  783.99    0.30    4.87    0.73    0.67    0.00    0.93    0.13
+Predicted:     0.13  783.99    0.30    4.87    0.73    0.67    0.00    0.93    0.13
+Act. Index:       2      10       3       2      11      10       0      14       2
+Pred. Indx:       2      10       3       2      11      10       0      14       2
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 223: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.20  783.99    0.60   18.40    0.33    1.00    0.93    0.73    0.13
+Predicted:     0.20  783.99    0.60   18.40    0.33    1.00    0.93    0.73    0.13
+Act. Index:       3      10       6       9       5      15      14      11       2
+Pred. Indx:       3      10       6       9       5      15      14      11       2
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 299: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.87  493.88    0.40   26.13    0.20    0.20    0.93    0.00    0.93
+Predicted:     0.87  493.88    0.40   26.13    0.20    0.20    0.93    0.00    0.93
+Act. Index:      13       2       4      13       3       3      14       0      14
+Pred. Indx:      13       2       4      13       3       3      14       0      14
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 48: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.80  493.88    0.00   26.13    0.40    0.00    1.00    0.20    0.07
+Predicted:     0.80  493.88    0.00   26.13    0.40    0.00    1.00    0.20    0.07
+Act. Index:      12       2       0      13       6       0      15       3       1
+Pred. Indx:      12       2       0      13       6       0      15       3       1
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 68: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.00  659.26    0.70   12.60    0.33    0.80    0.67    0.13    0.67
+Predicted:     0.00  622.25    1.40   16.47    0.67    0.27    1.00    0.47    0.27
+Act. Index:       0       7       7       6       5      12      10       2      10
+Pred. Indx:       0       6      14       8      10       4      15       7       4
+Index Diff:       0      -1       7       2       5      -8       5       5      -6
+exact_ratio: 0.1111111111111111
+close_ratio: 0.2222222222222222
+------------------------------
+Example 29: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.20  523.25    0.50   20.33    0.07    0.60    0.00    0.20    0.20
+Predicted:     0.20  523.25    0.50   20.33    0.07    0.60    0.00    0.20    0.20
+Act. Index:       3       3       5      10       1       9       0       3       3
+Pred. Indx:       3       3       5      10       1       9       0       3       3
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 170: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.13  622.25    1.20   16.47    0.00    0.07    0.27    0.87    0.47
+Predicted:     0.13  622.25    1.20   16.47    0.00    0.07    0.27    0.87    0.47
+Act. Index:       2       6      12       8       0       1       4      13       7
+Pred. Indx:       2       6      12       8       0       1       4      13       7
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 254: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.40  783.99    0.90   22.27    0.60    0.00    0.40    0.87    0.47
+Predicted:     0.40  783.99    0.90   22.27    0.60    0.00    0.40    0.87    0.47
+Act. Index:       6      10       9      11       9       0       6      13       7
+Pred. Indx:       6      10       9      11       9       0       6      13       7
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 243: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.40  493.88    0.70   14.53    0.07    0.33    0.47    0.27    0.07
+Predicted:     0.40  493.88    0.70   14.53    0.07    0.33    0.47    0.27    0.07
+Act. Index:       6       2       7       7       1       5       7       4       1
+Pred. Indx:       6       2       7       7       1       5       7       4       1
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 237: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.07  659.26    0.20   10.67    0.67    1.00    0.33    0.87    0.67
+Predicted:     0.07  622.25    1.50   10.67    0.67    1.00    0.33    0.87    0.27
+Act. Index:       1       7       2       5      10      15       5      13      10
+Pred. Indx:       1       6      15       5      10      15       5      13       4
+Index Diff:       0      -1      13       0       0       0       0       0      -6
+exact_ratio: 0.6666666666666666
+close_ratio: 0.7777777777777778
+------------------------------
+Example 108: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        1.00  932.33    1.50   26.13    0.53    0.67    0.00    0.07    0.73
+Predicted:     1.00  932.33    1.50   26.13    0.53    0.27    0.00    0.07    0.73
+Act. Index:      15      13      15      13       8      10       0       1      11
+Pred. Indx:      15      13      15      13       8       4       0       1      11
+Index Diff:       0       0       0       0       0      -6       0       0       0
+exact_ratio: 0.8888888888888888
+close_ratio: 0.8888888888888888
+------------------------------
+Example 4: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.80  466.16    0.90    8.73    0.33    0.20    0.73    0.13    0.93
+Predicted:     0.80  466.16    0.90    8.73    0.33    0.20    0.73    0.13    0.93
+Act. Index:      12       1       9       4       5       3      11       2      14
+Pred. Indx:      12       1       9       4       5       3      11       2      14
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 86: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.93  830.61    0.10   18.40    0.00    0.20    0.27    0.00    0.27
+Predicted:     0.93  830.61    0.10   18.40    0.00    0.20    0.27    0.00    0.27
+Act. Index:      14      11       1       9       0       3       4       0       4
+Pred. Indx:      14      11       1       9       0       3       4       0       4
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 157: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.47  493.88    1.20   18.40    0.07    0.60    0.40    0.07    0.93
+Predicted:     0.47  493.88    1.20   18.40    0.07    0.60    0.40    0.07    0.93
+Act. Index:       7       2      12       9       1       9       6       1      14
+Pred. Indx:       7       2      12       9       1       9       6       1      14
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 255: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.33  493.88    0.20   14.53    0.47    0.80    0.20    0.80    0.00
+Predicted:     0.33  493.88    0.20   14.53    0.47    0.80    0.20    0.80    0.00
+Act. Index:       5       2       2       7       7      12       3      12       0
+Pred. Indx:       5       2       2       7       7      12       3      12       0
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 59: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.13  830.61    0.30   20.33    0.40    0.00    0.27    0.87    0.73
+Predicted:     0.13  830.61    0.30   20.33    0.40    0.00    0.27    0.87    0.73
+Act. Index:       2      11       3      10       6       0       4      13      11
+Pred. Indx:       2      11       3      10       6       0       4      13      11
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 137: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.67  698.46    1.00   12.60    0.93    0.07    0.60    0.40    0.80
+Predicted:     0.67  698.46    1.00   12.60    0.93    0.07    0.60    0.40    0.80
+Act. Index:      10       8      10       6      14       1       9       6      12
+Pred. Indx:      10       8      10       6      14       1       9       6      12
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 200: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.80  466.16    1.00    2.93    0.80    0.13    0.53    0.60    0.00
+Predicted:     0.80  466.16    1.00    2.93    0.80    0.13    0.53    0.60    0.00
+Act. Index:      12       1      10       1      12       2       8       9       0
+Pred. Indx:      12       1      10       1      12       2       8       9       0
+Index Diff:       0       0       0       0       0       0       0       0       0
+exact_ratio: 1.0
+close_ratio: 1.0
+------------------------------
+Example 126: 
+Parameter:        A       C       D       M  attack   decay release sustainsustain_
+Actual:        0.07  440.00    0.50   16.47    0.47    0.00    0.73    0.93    0.33
+Predicted:     0.07  440.00    0.50   16.47    0.67    0.47    0.73    0.93    0.33
+Act. Index:       1       0       5       8       7       0      11      14       5
+Pred. Indx:       1       0       5       8      10       7      11      14       5
+Index Diff:       0       0       0       0       3       7       0       0       0
+exact_ratio: 0.7777777777777778
+close_ratio: 0.7777777777777778
+------------------------------
