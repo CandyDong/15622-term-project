@@ -14,8 +14,13 @@ import math
 from synthplayer.oscillators import *
 from scipy.io.wavfile import write, read
 from kapre.time_frequency import STFT, Magnitude, MagnitudeToDecibel
+from synth_generator import *
 
-BEST = True
+BEST = True # whether the skip training and load the best model
+if BEST: print("Loading BEST model; Training skipped!!!")
+
+NUM_EPOCH = 1
+BATCH_SIZE = 64
 
 SAMPLE_RATE = 16384
 OUT_DIR = "../data"
@@ -26,9 +31,6 @@ RECONSTRUCT_WAV_DIR = "../data/reconstructed_wav_files"
 SAMPLE_RECONSTRUCT_WAV_DIR = "../data/sample_wav_files/reconstructed"
 # MODEL_NAME = "CONV6XL" 
 MODEL_NAME = "E2E" 
-
-NUM_EPOCH = 100
-BATCH_SIZE = 64
 
 META_FILE_PATH = os.path.join(OUT_DIR, "meta.csv")
 MODEL_SAVE_PATH = os.path.join(MODEL_DIR, "{}.h5".format(MODEL_NAME))
@@ -49,21 +51,6 @@ if not os.path.exists(SAMPLE_WAV_DIR):
 	os.makedirs(SAMPLE_WAV_DIR)
 if not os.path.exists(SAMPLE_RECONSTRUCT_WAV_DIR):
 	os.makedirs(SAMPLE_RECONSTRUCT_WAV_DIR)
-
-''' 
-	generate `num` values in [min, max] 
-'''
-def generate_param(num, min, max):
-	ext = float(max - min)
-	return [i * ext / (num - 1) + min for i in range(num)]
-
-'''
-	generates a set of frequencies as per paper
-	paper: f = 2^(n/12)/ 440Hz with n in 0..15, 
-	corresponding to A4-C6
-'''
-def generate_freq(num):
-	return [math.pow(2, i / 12) * 440 for i in range(num)]
 
 NUM_CLASSES = 16
 PARAM_DICT = {
@@ -216,28 +203,6 @@ def reconstruct(pred_inds, meta):
 				pred[param] = PARAM_DICT[param][pred_inds[i][j]]
 			reconstruct_sound(pred)
 			writer.writerow(pred)
-
-def generate_synth(p, sample_rate):
-	# currently the oscillator only consists of a frequency modulated sine wave
-	m = Sine(frequency=p["M"], amplitude=p["D"], samplerate=sample_rate)
-	y_osc = Sine(frequency=p["C"], amplitude=p["A"], fm_lfo=m, samplerate=sample_rate)
-
-	y_env = EnvelopeFilter(y_osc, attack=p["attack"], 
-								  decay=p["decay"], 
-								  sustain=p["sustain"], 
-								  sustain_level=p["sustain_level"],
-								  release=p["release"])
-
-	# TODO: low pass filter + resonance + gate
-	synth = y_env
-	return synth.blocks()
-
-def generate_sound(gen, p, length, sample_rate):
-	num_samples = int(sample_rate*length)
-	data = []
-	while len(data) < num_samples:
-		data.extend(next(gen))
-	return np.array(data)
 
 def reconstruct_sound(param):
 	synth_gen = generate_synth(param, SAMPLE_RATE)
@@ -464,12 +429,11 @@ def main():
 	X_valid, y_valid = validation_generator.__getitem__(0)
 	meta_valid = validation_generator.get_meta(0)
 
-	# evaluate(model, X_valid, y_valid, meta_valid)
+	evaluate(model, X_valid, y_valid, meta_valid)
 
 	# generate_sample(os.path.join(SAMPLE_WAV_DIR, "3.wav"))
-	evaluate_sample(model, os.path.join(SAMPLE_WAV_DIR, "sample.wav"), "sample.wav")
+	# evaluate_sample(model, os.path.join(SAMPLE_WAV_DIR, "sample.wav"), "sample.wav")
 	# evaluate_sample(model, os.path.join(WAV_DIR, "00000.wav"))
-
 
 
 if __name__ == '__main__':

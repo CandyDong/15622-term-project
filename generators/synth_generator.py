@@ -7,6 +7,7 @@ import os
 from scipy.io.wavfile import write
 import csv
 import pprint
+from synth_generator import *
 
 pp = pprint.PrettyPrinter(indent=4, width=1)
 
@@ -84,23 +85,23 @@ def generate_dataset(args, param_set, labels):
 
 	return dataset
 
-'''
-	synth defined in the paper
-'''
-def generate_synth(p, sample_rate):
-	# currently the oscillator only consists of a frequency modulated sine wave
-	m = Sine(frequency=p["M"], amplitude=p["D"], samplerate=sample_rate)
-	y_osc = Sine(frequency=p["C"], amplitude=p["A"], fm_lfo=m, samplerate=sample_rate)
+# '''
+# 	synth defined in the paper
+# '''
+# def generate_synth(p, sample_rate):
+# 	# currently the oscillator only consists of a frequency modulated sine wave
+# 	m = Sine(frequency=p["M"], amplitude=p["D"], samplerate=sample_rate)
+# 	y_osc = Sine(frequency=p["C"], amplitude=p["A"], fm_lfo=m, samplerate=sample_rate)
 
-	y_env = EnvelopeFilter(y_osc, attack=p["attack"], 
-								  decay=p["decay"], 
-								  sustain=p["sustain"], 
-								  sustain_level=p["sustain_level"],
-								  release=p["release"])
+# 	y_env = EnvelopeFilter(y_osc, attack=p["attack"], 
+# 								  decay=p["decay"], 
+# 								  sustain=p["sustain"], 
+# 								  sustain_level=p["sustain_level"],
+# 								  release=p["release"])
 
-	# TODO: low pass filter + resonance + gate
-	synth = y_env
-	return synth.blocks()
+# 	# TODO: low pass filter + resonance + gate
+# 	synth = y_env
+# 	return synth.blocks()
 
 
 def generate_sound(gen, p, length, sample_rate):
